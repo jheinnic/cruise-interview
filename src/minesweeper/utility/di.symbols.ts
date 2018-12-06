@@ -1,9 +1,12 @@
 export const DI_TYPES = {
    Express: Symbol('Express'),
+   Session: Symbol('Session'),
    GameBoardFactory: Symbol('GameBoardFactory'),
    GameBoard: Symbol('GameBoard'),
    GameBoardStore: Symbol('GameBoardStore'),
-   GameService: Symbol('GameService'),
+   GameBoardService: Symbol('GameBoardService'),
+   CommandBus: Symbol('CommandBus'),
+   EventBus: Symbol('EventBus'),
    UuidGenerator: Symbol('UuidGenerator'),
-   RandomSource: Symbol('RandomSource')
+   RandomGenerator: Symbol('RandomGenerator')
 }

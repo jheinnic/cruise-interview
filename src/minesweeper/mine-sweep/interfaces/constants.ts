@@ -1,0 +1,1 @@
+export const HAS_MINE_CONTENT: number = 9;

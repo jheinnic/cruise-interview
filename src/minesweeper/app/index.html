@@ -1,28 +1,32 @@
-<script src="/socket.io/socket.io.js"></script>
+<!--script src="/socket.io/socket.io.js"></script-->
 <script>
-  var socket = io.connect('http://localhost:8000/minesweeper');
-  var board = [];
-  var moveId = 0;
+   /*
+   var socket = new WebSocket('ws://localhost:8000');
+   var board = [];
+   var moveId = 0;
 
-  socket.on('errorMsg', function (cid, data) {
+   socket.onmessage = function(message) {
+      console.log('message', message);
+   };
+   socket.on('errorMsg', function (cid, data) {
+      console.log(cid, data);
+   });
+   socket.on('gameCreated', function (cid, data) {
+      moveId = 1;
+      console.log(cid, data);
+      console.log(board);
+   });
+   socket.on('moveMade', function (cid, data) {
+      moveId++;
      console.log(cid, data);
-  });
-  socket.on('gameCreated', function (cid, data) {
-     moveId = 1;
-     console.log(cid, data);
-     console.log(board);
-  });
-  socket.on('moveMade', function (cid, data) {
-     moveId++;
-    console.log(cid, data);
-    for (let revealData of data.revealedCells) {
-       board[revealData.xCell][revealData.yCell] = revealData.content;
-    }
-     console.log(board);
-  });
+     for (let revealData of data.revealedCells) {
+        board[revealData.xCell][revealData.yCell] = revealData.content;
+     }
+      console.log(board);
+   });
 
   function createGame(xSize, ySize, mineCount) {
-     socket.emit('createGame', 'createGame', {xSize, ySize, mineCount});
+     socket.send('createGame:' + JSON.stringify({xSize, ySize, mineCount}));
      for (let ii = 0; ii < xSize; ii++) {
         const row = [];
         board[ii] = row;
@@ -33,7 +37,13 @@
   }
 
   function makeMove(xCell, yCell) {
-     const cid = 'move #' + moveId;
-     socket.emit('makeMove', cid, {moveId, xCell, yCell});
+     // const cid = 'move #' + moveId;
+     socket.emit('makeMove:' + JSON.stringify({moveId, xCell, yCell}));
   }
+   */
+
+   function createGame(xSize, ySize, mineCount) {
+      var body = {xSize, ySize, mineCount};
+
+   }
 </script>

@@ -1,7 +1,7 @@
 import {IRandomGenerator} from './random-generator.interface';
-import {injectable} from 'inversify';
+import {Injectable} from '@nestjs/common';
 
-@injectable()
+@Injectable()
 export class RandomGenerator implements IRandomGenerator {
    public randomFloat(maxValue: number = 1, minValue: number = (maxValue - 1)): number
    {
