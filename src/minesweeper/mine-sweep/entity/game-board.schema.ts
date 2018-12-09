@@ -6,8 +6,9 @@ export const GameBoardSchema = new mongoose.Schema({
       match: /[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/
    },
    nextTurnId: {
-      type: String,
-      match: /[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/
+      type: Number,
+      min: -1,
+      max: 2147483647
    },
    xSize: {
       type: Number,
@@ -27,10 +28,6 @@ export const GameBoardSchema = new mongoose.Schema({
       }
    },
    mineLocations: [Number],
-   hiddenCellsLeft: {
-      type: Number,
-      min: 1
-   },
    safeCellsLeft: {
       type: Number,
       min: 0

@@ -1,25 +1,32 @@
-import { IEvent } from '@nestjs/cqrs';
 import {RevealedCellContent} from './revealed-cell-content.class';
-import {IsDefined, IsPositive, IsUUID} from 'class-validator';
+import {IsDefined, IsPositive, IsUUID, Max} from 'class-validator';
 import {UUID} from '../../../utility/uuid.type';
 
-export class GameResumedDto implements IEvent {
+export class GameResumedDto
+{
    @IsUUID()
    public readonly gameBoardId: UUID;
 
    @IsPositive()
-   public readonly latestMoveId: number;
+   @Max(2147483647)
+   public readonly latestTurnId: number;
 
    @IsDefined()
    public readonly cellsRevealed: ReadonlyArray<RevealedCellContent>;
-    constructor(
-       gameBoardId: UUID,
-       latestMoveId: number,
-       cellsRevealed: ReadonlyArray<RevealedCellContent>
-    )
-    {
-       this.gameBoardId = gameBoardId;
-       this.latestMoveId = latestMoveId;
-       this.cellsRevealed = cellsRevealed;
-    }
+
+   @IsPositive()
+   public readonly safeCellsLeft: number;
+
+   constructor(
+      gameBoardId: UUID,
+      latestTurnId: number,
+      cellsRevealed: ReadonlyArray<RevealedCellContent>,
+      safeCellsLeft: number
+   )
+   {
+      this.gameBoardId = gameBoardId;
+      this.latestTurnId = latestTurnId;
+      this.cellsRevealed = cellsRevealed;
+      this.safeCellsLeft = safeCellsLeft;
+   }
 }

@@ -3,10 +3,10 @@ import {UUID} from '../../../utility/uuid.type';
 
 export class ResumeGameRequestDto {
    @IsUUID()
-   public readonly gameBoardId: UUID;
+   public readonly gameBoardUuid: UUID;
 
-   constructor(gameBoardId: UUID) {
-      this.gameBoardId = gameBoardId;
+   constructor(gameBoardUuid: UUID) {
+      this.gameBoardUuid = gameBoardUuid;
    }
 }
 

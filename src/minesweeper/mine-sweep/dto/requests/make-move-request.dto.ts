@@ -1,9 +1,9 @@
-import {IsUUID, Min} from 'class-validator';
-import {UUID} from '../../../utility/uuid.type';
+import {IsPositive, Max, Min} from 'class-validator';
 
 export class MakeMoveRequestDto {
-   @IsUUID()
-   public readonly turnId: UUID = '' as UUID;
+   @IsPositive()
+   @Max(2147483647)
+   public readonly turnId: number = 0;
 
    @Min(0)
    public readonly xCell: number = 0;

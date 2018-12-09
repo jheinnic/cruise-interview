@@ -1,4 +1,4 @@
-import {IsUUID} from 'class-validator';
+import {IsPositive, IsUUID, Max} from 'class-validator';
 import {UUID} from '../../../utility/uuid.type';
 
 export class GameCreatedDto
@@ -6,13 +6,14 @@ export class GameCreatedDto
    @IsUUID()
    public readonly gameBoardId: UUID;
 
-   @IsUUID()
-   public readonly nextMoveId: UUID;
+   @IsPositive()
+   @Max(2147483647)
+   public readonly nextTurnId: number;
 
-   constructor( gameBoardId: UUID, nextMoveId: UUID )
+   constructor( gameBoardId: UUID, nextTurnId: number )
    {
       this.gameBoardId = gameBoardId;
-      this.nextMoveId = nextMoveId;
+      this.nextTurnId = nextTurnId;
    }
 }
 

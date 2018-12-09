@@ -4,7 +4,7 @@ import {GameBoardSchema} from './entity/game-board.schema';
 import {GameBoardService} from './game-board.service';
 import {MineSweeperController} from './mine-sweeper.controller';
 import {UtilityModule} from '../utility/utility.module';
-import {DI_TYPES} from '../utility/di.symbols';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols';
 import session from 'express-session';
 
 @Module({
@@ -20,7 +20,7 @@ import session from 'express-session';
    controllers: [MineSweeperController],
    providers: [
       {
-         provide: DI_TYPES.GameBoardService,
+         provide: UTILITY_DI_TYPES.GameBoardService,
          useClass: GameBoardService
       }
    ],

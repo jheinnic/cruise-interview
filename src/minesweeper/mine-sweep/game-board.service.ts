@@ -1,4 +1,7 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {
+   BadRequestException, ConflictException, Inject, Injectable, NotAcceptableException,
+   NotFoundException
+} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import ndarray = require('ndarray');
@@ -15,24 +18,23 @@ import {getCellIndexToCoordinates} from './entity/cell-index-to-coordinates.func
 import {IGameBoardService} from './interfaces/game-board-service.interface';
 import {HAS_MINE_CONTENT} from './interfaces/constants';
 import {IRandomGenerator} from '../utility/random-generator.interface';
-import {IUuidGenerator} from '../utility/uuid-generator.interface';
 import {UUID} from '../utility/uuid.type';
-import {DI_TYPES} from '../utility/di.symbols';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols';
 
 @Injectable()
 export class GameBoardService implements IGameBoardService
 {
    constructor(
       @InjectModel('GameBoard') private readonly gameBoardModel: Model<IGameBoard>,
-      @Inject(DI_TYPES.RandomGenerator) private readonly randomGenerator: IRandomGenerator,
-      @Inject(DI_TYPES.UuidGenerator) private readonly uuidGenerator: IUuidGenerator)
+      @Inject(UTILITY_DI_TYPES.RandomGenerator) private readonly randomGenerator: IRandomGenerator)
    {}
 
    async createGameBoard(gameBoardId: UUID, {xSize, ySize, mineCount}: CreateGameRequestDto): Promise<GameCreatedDto>
    {
-      const cellCount = xSize * ySize;
       const cellIndexMap = getCellIndexToCoordinates(xSize, ySize);
       const cellBoundaryGen = getCellBoundaryGenerator(xSize, ySize);
+
+      const cellCount = xSize * ySize;
       const boardState = new Int8Array(cellCount);
       const cellGrid = ndarray(boardState, [xSize, ySize]);
 
@@ -56,7 +58,7 @@ export class GameBoardService implements IGameBoardService
          }
       }
 
-      const nextTurnId = this.uuidGenerator.generate();
+      const nextTurnId = this.randomGenerator.randomInt();
       const createdGameBoard = new this.gameBoardModel({
          gameBoardId,
          nextTurnId,
@@ -64,7 +66,6 @@ export class GameBoardService implements IGameBoardService
          ySize,
          boardState,
          mineLocations: cellIndices.slice(0, mineCount),
-         hiddenCellsLeft: cellCount,
          safeCellsLeft: cellCount - mineCount
       });
 
@@ -78,62 +79,93 @@ export class GameBoardService implements IGameBoardService
       const gameBoardList: IGameBoard[] =
          await this.gameBoardModel.find({ gameBoardId }).exec();
 
-      if (gameBoardList.length != 1) {
-         console.error('Hey whats up!?');
-         throw new Error();
+      if (gameBoardList.length < 1) {
+         throw new NotFoundException(`No game board found for ${gameBoardId}`);
+      } else if(gameBoardList.length > 1) {
+         throw new ConflictException(`More than one game board found for ${gameBoardId}`);
       }
+
       const gameBoard = gameBoardList[0];
 
-      if (turnId != gameBoard.nextTurnId) {
-         throw new Error(`${turnId} not equal to ${gameBoard.nextTurnId} indicates move is out-of-sequence`);
+      if (gameBoard.nextTurnId < 0) {
+         if (gameBoard.safeCellsLeft > 0) {
+            throw new NotAcceptableException(`Game ${gameBoardId} has already ended for a loss`);
+         } else {
+            throw new NotAcceptableException(`Game ${gameBoardId} has already ended for a win`);
+         }
       }
-      if ((xCell > (gameBoard.xSize - 1)) || (xCell < 0)) {
-         throw new Error(`x dimension, ${xCell}, is out of bounds.`);
+      if (turnId !== gameBoard.nextTurnId) {
+         throw new NotAcceptableException(`${turnId} not equal to ${gameBoard.nextTurnId} indicates move is out-of-sequence`);
       }
-      if ((yCell > (gameBoard.ySize - 1)) || (yCell < 0)) {
-         throw new Error(`y dimension, ${yCell}, is out of bounds.`);
+      if ((xCell >= gameBoard.xSize) || (xCell < 0)) {
+         throw new BadRequestException(`x dimension, ${xCell}, is out of bounds.`);
+      }
+      if ((yCell >= gameBoard.ySize) || (yCell < 0)) {
+         throw new BadRequestException(`y dimension, ${yCell}, is out of bounds.`);
       }
 
       const cellGrid =
          ndarray(gameBoard.boardState, [gameBoard.xSize, gameBoard.ySize]);
+      let cellsRevealed: RevealedCellContent[];
       let playerStatus: PlayerStatus = PlayerStatus.PLAYING;
       let content = cellGrid.get(xCell, yCell);
-      const cellsRevealed: RevealedCellContent[] = [{xCell, yCell, content}];
-      gameBoard.nextTurnId = this.uuidGenerator.generate();
-
 
       if (content == 9) {
+         // Don't add player's chosen cell to reveal list yet so we don't wind up having
+         // to worry about duplicating it while revealing remaining mines.
          playerStatus = PlayerStatus.DEFEATED;
-         gameBoard.hiddenCellsLeft--;
+         cellsRevealed = [];
       } else if (content >= 0) {
          cellGrid.set(xCell, yCell, -1);
-         gameBoard.hiddenCellsLeft--;
+         cellsRevealed = [{xCell, yCell, content}];
 
          if (content == 0) {
-            const boundaryGen = getCellBoundaryGenerator(gameBoard.xSize, gameBoard.ySize)
-            this.expandRevealedCells(cellsRevealed, cellGrid, boundaryGen, xCell, yCell);
+            const boundaryGen =
+               getCellBoundaryGenerator(gameBoard.xSize, gameBoard.ySize);
+            this.expandRevealedCells(
+               cellsRevealed, cellGrid, boundaryGen, xCell, yCell);
          }
 
-         if (--gameBoard.safeCellsLeft == 0) {
+         gameBoard.safeCellsLeft = gameBoard.safeCellsLeft - cellsRevealed.length;
+
+         if (gameBoard.safeCellsLeft == 0) {
             playerStatus = PlayerStatus.WINNER;
+         }
+      } else {
+         throw new ConflictException(`${xCell}, ${yCell} has already been cleared in ${gameBoardId}`);
+      }
+
+      if (playerStatus === PlayerStatus.PLAYING) {
+         // Set new turn Id to match on player's next move.
+         gameBoard.nextTurnId = this.randomGenerator.randomInt();
+      } else {
+         // Since game is over, reveal mine locations and clear next-turn id.
+         gameBoard.nextTurnId = -1;
+
+         // Mine locations are stored using their one-dimensional index, so map
+         // them back to cartesian coordinates for return signature compliance.
+         const cellIndexMap =
+            getCellIndexToCoordinates(gameBoard.xSize, gameBoard.ySize);
+         for (let nextIndex of gameBoard.mineLocations) {
+            const [xCell, yCell] = cellIndexMap(nextIndex);
+            cellsRevealed.push({xCell, yCell, content: 9});
          }
       }
 
+      const retVal = {
+         playerStatus,
+         nextTurnId: gameBoard.nextTurnId,
+         cellsRevealed,
+         safeCellsLeft: gameBoard.safeCellsLeft
+      };
+      console.log(retVal);
+
+      // Save changes.  Note that completed games are not purged here so there is
+      // historical record.  Be sure to account for purging this data at some point.
       await gameBoard.save();
 
-      return {
-         playerStatus,
-         gameBoard.nextTurnId,
-         cellsRevealed,
-      };
-
+      return retVal;
    }
-
-   async findAll(): Promise<IGameBoard[]>
-   {
-      return await this.gameBoardModel.find().exec();
-   }
-
 
    private expandRevealedCells(
       revealedCells: RevealedCellContent[],
@@ -144,131 +176,13 @@ export class GameBoardService implements IGameBoardService
    {
       for (let [xCell, yCell] of boundaryGen(fromXCell, fromYCell)) {
          const content = cellGrid.get(xCell, yCell);
-         if (content < 0) {
-            return;
-         }
-
-         cellGrid.set(xCell, yCell, -1);
-         revealedCells.push({xCell, yCell, content});
-         if (content == 0) {
-            this.expandRevealedCells(revealedCells, cellGrid, boundaryGen, xCell, yCell);
+         if (content >= 0) {
+            cellGrid.set(xCell, yCell, -1);
+            revealedCells.push({xCell, yCell, content});
+            if (content == 0) {
+               this.expandRevealedCells(revealedCells, cellGrid, boundaryGen, xCell, yCell);
+            }
          }
       }
    }
 }
-
-// // import express from 'express';
-// import {inject, injectable} from 'inversify';
-// // import SocketServer, {Socket} from 'socket.io';
-// import {Express} from 'express';
-// import * as WebSocket from 'ws';
-// import * as http from 'http';
-//
-// import {DI_TYPES} from '../utility/di.symbols';
-// import {IGameBoardFactory} from '../../cqrs/game/models/game-board-factory.interface';
-// import {NewGameCommand} from './dto/requests/create-game-request.dto';
-// import {transformAndValidateSync} from 'class-transformer-validator';
-// import {IGameBoard} from '../../cqrs/game/models/game-board.interface';
-// import {MakeMoveCommand} from './dto/requests/make-move-request.dto';
-// import {ErrorCode} from './dto/replies/error-code.enum';
-//
-// @injectable()
-// export class MineSweeperApp
-// {
-//    private static readonly createGamePattern = /^createGame:(.*)$/
-//
-//    private static readonly makeMovePattern = /^makeMove:(.*)$/
-//
-//    constructor(
-//       @inject(DI_TYPES.Express) private readonly app: Express,
-//       @inject(DI_TYPES.GameBoardFactory) private readonly gameFactory: IGameBoardFactory
-//    )
-//    {}
-//
-//    run(): void
-//    {
-//       // this.app.use(session({
-//       //    secret: '343ji43j4n3jn4jk3n',
-//       //    resave: true,
-//       //    saveUninitialized: false
-//       // }));
-//
-//       // this.app.get('/game', (_req, _res, _next) => {
-//       // req.session
-//       // })
-//
-//       //initialize a simple http server
-//       const server = http.createServer(this.app);
-//
-//       //initialize the WebSocket server instance
-//       const wss = new WebSocket.Server({server});
-//       // const io = SocketServer(server);
-//
-//       server.listen(8000);
-//
-//       this.app.get('/', function (_req, res, _next) {
-//          res.sendFile(__dirname + '/index.html');
-//       });
-//
-//       wss.on('connection', (ws: WebSocket) => {
-//          let game: IGameBoard | undefined = undefined;
-//
-//          ws.on('message', (message: string) => {
-//             console.log('message', message);
-//             let testResult;
-//
-//             testResult = message.match(MinesweeperApp.createGamePattern);
-//             console.log(testResult);
-//             if (!!testResult && (
-//                testResult.length > 1
-//             ))
-//             {
-//                const command = transformAndValidateSync(NewGameCommand, testResult[1]);
-//                if (!Array.isArray(command)) {
-//                   try {
-//                      game = this.gameFactory.createBoard(
-//                         command.xSize, command.ySize, command.mineCount);
-//                      ws.send('gameCreated');
-//                   } catch (err) {
-//                      ws.send('error', err);
-//                   }
-//                }
-//
-//                return;
-//             }
-//
-//             testResult = message.match(MinesweeperApp.makeMovePattern);
-//             console.log(testResult);
-//             if (!!testResult && (
-//                testResult.length > 1
-//             ))
-//             {
-//                const command = transformAndValidateSync(MakeMoveCommand, testResult[1]);
-//                if (!Array.isArray(command)) {
-//                   if (!game) {
-//                      ws.send(
-//                         'errorMsg:' + JSON.stringify(
-//                         {
-//                            errorCode: ErrorCode.NO_GAME_ACTIVE,
-//                            message: 'Start a game before moving'
-//                         }
-//                         )
-//                      );
-//                   } else {
-//                      try {
-//                         const result =
-//                            game.makeMove(command.moveId, command.xCell, command.yCell);
-//                         ws.send('moveMade:' + JSON.stringify(result));
-//                      } catch (err) {
-//                         ws.send('errorMsg:' + JSON.stringify(err));
-//                      }
-//                   }
-//                }
-//
-//                return;
-//             }
-//          })
-//          ;
-//       });
-//    }
-// }

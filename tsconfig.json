@@ -50,6 +50,7 @@
     "src/**/*.ts",
   ],
   "exclude": [
+    "src/cqrs/**/*.ts",
     "dist",
     "node_modules",
   ]

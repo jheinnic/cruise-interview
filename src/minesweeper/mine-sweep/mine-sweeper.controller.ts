@@ -1,23 +1,23 @@
 import {Body, Controller, Inject, Post, Put, Session} from '@nestjs/common';
-import {CreateGameDto} from '../../cqrs/game/web/create-game.dto';
-import {MakeMoveDto} from '../../cqrs/game/web/make-move.dto';
 import {IGameBoardService} from './interfaces/game-board-service.interface';
 import {IUuidGenerator} from '../utility/uuid-generator.interface';
 import {UUID} from '../utility/uuid.type';
-import {DI_TYPES} from '../utility/di.symbols';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols';
+import {CreateGameRequestDto} from './dto/requests/create-game-request.dto';
+import {MakeMoveRequestDto} from './dto/requests/make-move-request.dto';
 
 
 @Controller('/game')
 export class MineSweeperController
 {
    constructor(
-      @Inject(DI_TYPES.GameBoardService) private readonly gameService: IGameBoardService,
-      @Inject(DI_TYPES.UuidGenerator) private readonly uuidGenerator: IUuidGenerator
+      @Inject(UTILITY_DI_TYPES.GameBoardService) private readonly gameService: IGameBoardService,
+      @Inject(UTILITY_DI_TYPES.UuidGenerator) private readonly uuidGenerator: IUuidGenerator
    ) { }
 
    @Post('/')
    public async createGameBoard(
-      @Body() createGameDto: CreateGameDto,
+      @Body() createGameDto: CreateGameRequestDto,
       @Session() session: Express.Session
    )
    {
@@ -29,7 +29,7 @@ export class MineSweeperController
 
    @Put('/')
    public async makeMove(
-      @Body() makeMoveDto: MakeMoveDto,
+      @Body() makeMoveDto: MakeMoveRequestDto,
       @Session() session: Express.Session
    )
    {

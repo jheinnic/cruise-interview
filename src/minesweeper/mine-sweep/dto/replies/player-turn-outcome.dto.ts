@@ -1,12 +1,12 @@
-import {IsDefined, IsUUID} from 'class-validator';
+import {IsDefined, IsPositive, Max, Min} from 'class-validator';
 import {RevealedCellContent} from './revealed-cell-content.class';
 import {PlayerStatus} from './player-status.enum';
-import {UUID} from '../../../utility/uuid.type';
 
 export class PlayerTurnOutcomeDto
 {
-   @IsUUID()
-   readonly nextTurnId: UUID;
+   @IsPositive()
+   @Max(2147483647)
+   readonly nextTurnId: number;
 
    @IsDefined()
    readonly playerStatus: PlayerStatus;
@@ -14,15 +14,20 @@ export class PlayerTurnOutcomeDto
    @IsDefined()
    readonly cellsRevealed: ReadonlyArray<RevealedCellContent>;
 
+   @Min(0)
+   readonly safeCellsLeft: number;
+
    constructor(
-      nextTurnId: UUID,
+      nextTurnId: number,
       playerStatus: PlayerStatus,
-      cellsRevealed: ReadonlyArray<RevealedCellContent>
+      cellsRevealed: ReadonlyArray<RevealedCellContent>,
+      safeCellsLeft: number
    )
    {
       this.nextTurnId = nextTurnId;
       this.playerStatus = playerStatus;
       this.cellsRevealed = cellsRevealed;
+      this.safeCellsLeft = safeCellsLeft;
    }
 }
 

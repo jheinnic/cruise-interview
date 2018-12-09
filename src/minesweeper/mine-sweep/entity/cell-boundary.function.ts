@@ -1,6 +1,13 @@
 export function getCellBoundaryGenerator(xSize: number, ySize: number):
-   (xIndex: number, yIndex: number) => IterableIterator<[number, number]>
+   (xIdx: number, yIdx: number) => IterableIterator<[number, number]>
 {
+   if (xSize < 3) {
+      throw new Error('x-dimension must be at least 3');
+   }
+   if (ySize < 3) {
+      throw new Error('y-dimension must be at least 3');
+   }
+
    const maxX = xSize - 1;
    const maxY = ySize - 1;
 
@@ -12,7 +19,8 @@ export function getCellBoundaryGenerator(xSize: number, ySize: number):
       yield [xIndex, yIndex + yDelta];
    }
 
-   function* yieldVerticalEdge(xIndex: number, yIndex: number, xDelta: number): IterableIterator<[number, number]>
+   function* yieldVerticalEdge(
+      xIndex: number, yIndex: number, xDelta: number): IterableIterator<[number, number]>
    {
       yield [xIndex, yIndex + 1];
       yield [xIndex + xDelta, yIndex + 1];
@@ -21,7 +29,8 @@ export function getCellBoundaryGenerator(xSize: number, ySize: number):
       yield [xIndex, yIndex - 1];
    }
 
-   function* yieldHorizontalEdge(xIndex: number, yIndex: number, yDelta: number): IterableIterator<[number, number]>
+   function* yieldHorizontalEdge(
+      xIndex: number, yIndex: number, yDelta: number): IterableIterator<[number, number]>
    {
       yield [xIndex + 1, yIndex];
       yield [xIndex + 1, yIndex + yDelta];
