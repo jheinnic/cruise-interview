@@ -4,12 +4,13 @@
         "outDir": "../build"
     },
     "include": [
-        "./**/*.spec",
+        "./**/*.spec.ts",
         "../src/**/*.ts",
     ],
     "exclude": [
         "../dist",
         "../build",
-        "../node_modules"
+        "../node_modules",
+        "../src/cqrs"
     ]
 }

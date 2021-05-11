@@ -6,6 +6,7 @@ import {UtilityModule} from '../utility/utility.module';
 @Module({
    imports: [
       MongooseModule.forRoot('mongodb://localhost/nest'),
+      UtilityModule,
       MineSweeperModule,
    ],
 })

@@ -1,4 +1,12 @@
 {
+  "scripts": {
+        "build": "yarn run clean && tsc --declaration",
+        "clean": "rm -rf dist/*.js dist/*.d.ts build .nyc_output build coverage doc; mkdir build",
+        "cover": "yarn test && nyc report --reporter=lcov",
+        "doc": "node_modules/.bin/typedoc --mode modules --out doc src typings",
+        "pub": "yarn build && yarn publish --registry http://localhost:4873",
+        "test": "rm -rf build && mkdir build && tsc -p test && nyc mocha build/test/*.js"
+},
   "dependencies": {
     "@loopback/metadata": "^1.0.1",
     "@nestjs/common": "^5.4.1",
