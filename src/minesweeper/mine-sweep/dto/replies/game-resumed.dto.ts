@@ -1,6 +1,6 @@
-import {RevealedCellContent} from './revealed-cell-content.class';
+import {RevealedCellContent} from './revealed-cell-content.class.js';
 import {IsDefined, IsPositive, IsUUID, Max} from 'class-validator';
-import {UUID} from '../../../utility/uuid.type';
+import {UUID} from '../../../utility/uuid.type.js';
 
 export class GameResumedDto
 {

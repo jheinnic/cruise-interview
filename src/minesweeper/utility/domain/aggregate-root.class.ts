@@ -1,8 +1,8 @@
 import {MetadataMap, MetadataInspector} from '@loopback/metadata';
 import {isKeyOf} from 'simplytyped';
 
-import {AbstractCommand} from './absrtract-command.class';
-import {COMMAND_HANDLER_MARKER_KEY, CommandHandlerMarker} from './command-handler-makrer.interface';
+import {AbstractCommand} from './absrtract-command.class.js';
+import {COMMAND_HANDLER_MARKER_KEY, CommandHandlerMarker} from './command-handler-makrer.interface.js';
 
 export abstract class AggregateRoot {
    private readonly propMap: MetadataMap<CommandHandlerMarker<any>> | undefined;

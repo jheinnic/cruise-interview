@@ -3,29 +3,29 @@ import {
    NotFoundException
 } from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import ndarray = require('ndarray');
+import mongoose from 'mongoose';
+import ndarray from 'ndarray';
 
-import {CreateGameRequestDto} from './dto/requests/create-game-request.dto';
-import {MakeMoveRequestDto} from './dto/requests/make-move-request.dto';
-import {PlayerTurnOutcomeDto} from './dto/replies/player-turn-outcome.dto';
-import {GameCreatedDto} from './dto/replies/game-created.dto';
-import {PlayerStatus} from './dto/replies/player-status.enum';
-import {RevealedCellContent} from './dto/replies/revealed-cell-content.class';
-import {IGameBoard} from './entity/game-board.interface';
-import {getCellBoundaryGenerator} from './entity/cell-boundary.function';
-import {getCellIndexToCoordinates} from './entity/cell-index-to-coordinates.function';
-import {IGameBoardService} from './interfaces/game-board-service.interface';
-import {HAS_MINE_CONTENT} from './interfaces/constants';
-import {IRandomGenerator} from '../utility/random-generator.interface';
-import {UUID} from '../utility/uuid.type';
-import {UTILITY_DI_TYPES} from '../utility/di.symbols';
+import {CreateGameRequestDto} from './dto/requests/create-game-request.dto.js';
+import {MakeMoveRequestDto} from './dto/requests/make-move-request.dto.js';
+import {PlayerTurnOutcomeDto} from './dto/replies/player-turn-outcome.dto.js';
+import {GameCreatedDto} from './dto/replies/game-created.dto.js';
+import {PlayerStatus} from './dto/replies/player-status.enum.js';
+import {RevealedCellContent} from './dto/replies/revealed-cell-content.class.js';
+import {IGameBoard} from './entity/game-board.interface.js';
+import {getCellBoundaryGenerator} from './entity/cell-boundary.function.js';
+import {getCellIndexToCoordinates} from './entity/cell-index-to-coordinates.function.js';
+import {IGameBoardService} from './interfaces/game-board-service.interface.js';
+import {HAS_MINE_CONTENT} from './interfaces/constants.js';
+import {IRandomGenerator} from '../utility/random-generator.interface.js';
+import {UUID} from '../utility/uuid.type.js';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols.js';
 
 @Injectable()
 export class GameBoardService implements IGameBoardService
 {
    constructor(
-      @InjectModel('GameBoard') private readonly gameBoardModel: Model<IGameBoard>,
+      @InjectModel('GameBoard') private readonly gameBoardModel: mongoose.Model<IGameBoard>,
       @Inject(UTILITY_DI_TYPES.RandomGenerator) private readonly randomGenerator: IRandomGenerator)
    {}
 

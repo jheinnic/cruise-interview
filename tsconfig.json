@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es6",                       /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
-    "module": "commonjs",                  /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+    "target": "es6",                    /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
+    "module": "es6",                    /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
     "lib": ["esnext", "dom"],              /* Specify library files to be included in the compilation. */
-    "allowJs": true,                       /* Allow javascript files to be compiled. */
+    "allowJs": false,                      /* Allow javascript files to be compiled. */
     "checkJs": false,                      /* Report errors in .js files. */
     "sourceMap": true,                     /* Generates corresponding '.map' file. */
     "outDir": "./dist",                    /* Redirect output structure to the directory. */
-    "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
-    // "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
+    // "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
+    // "isolatedModules": true,            /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
     "downlevelIteration": true,            /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
 
     /* Strict Type-Checking Options */
@@ -50,7 +50,6 @@
     "src/**/*.ts",
   ],
   "exclude": [
-    "src/cqrs/**/*.ts",
     "dist",
     "node_modules",
   ]

@@ -1,8 +1,8 @@
 import {DynamicModule, Module, SingleScope} from '@nestjs/common';
-import {UTILITY_DI_TYPES} from './di.symbols';
-import {RandomGenerator} from './random-generator.class';
-import {V1UuidGenerator} from './v1-uuid-generator.service';
-import {V4UuidGenerator} from './v4-uuid-generator.service';
+import {UTILITY_DI_TYPES} from './di.symbols.js';
+import {RandomGenerator} from './random-generator.class.js';
+import {V1UuidGenerator} from './v1-uuid-generator.service.js';
+import {V4UuidGenerator} from './v4-uuid-generator.service.js';
 
 @SingleScope()
 @Module({

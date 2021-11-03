@@ -1,11 +1,12 @@
+import session from 'express-session';
+
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
-import {GameBoardSchema} from './entity/game-board.schema';
-import {GameBoardService} from './game-board.service';
-import {MineSweeperController} from './mine-sweeper.controller';
-import {UtilityModule} from '../utility/utility.module';
-import {UTILITY_DI_TYPES} from '../utility/di.symbols';
-import session from 'express-session';
+import {GameBoardSchema} from './entity/game-board.schema.js';
+import {GameBoardService} from './game-board.service.js';
+import {MineSweeperController} from './mine-sweeper.controller.js';
+import {UtilityModule} from '../utility/utility.module.js';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols.js';
 
 @Module({
    imports: [

@@ -1,6 +1,6 @@
 import {IsDefined, IsPositive, Max, Min} from 'class-validator';
-import {RevealedCellContent} from './revealed-cell-content.class';
-import {PlayerStatus} from './player-status.enum';
+import {RevealedCellContent} from './revealed-cell-content.class.js';
+import {PlayerStatus} from './player-status.enum.js';
 
 export class PlayerTurnOutcomeDto
 {

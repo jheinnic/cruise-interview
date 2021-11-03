@@ -1,4 +1,4 @@
-import {UUID} from '../../utility/uuid.type';
+import {UUID} from '../../utility/uuid.type.js';
 import * as mongoose from 'mongoose';
 
 export interface IGameBoard extends mongoose.Document {

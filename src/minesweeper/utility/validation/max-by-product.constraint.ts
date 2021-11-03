@@ -2,7 +2,7 @@ import {
    registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint,
    ValidatorConstraintInterface
 } from 'class-validator';
-// import {CustomValidationOptions} from './custom-validation-options.interface';
+// import {CustomValidationOptions} from './custom-validation-options.interface.js';
 
 @ValidatorConstraint({async: false})
 export class IsDevelopmentOnlyValidator implements ValidatorConstraintInterface

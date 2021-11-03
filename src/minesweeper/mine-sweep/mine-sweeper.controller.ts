@@ -1,10 +1,10 @@
 import {Body, Controller, Inject, Post, Put, Session} from '@nestjs/common';
-import {IGameBoardService} from './interfaces/game-board-service.interface';
-import {IUuidGenerator} from '../utility/uuid-generator.interface';
-import {UUID} from '../utility/uuid.type';
-import {UTILITY_DI_TYPES} from '../utility/di.symbols';
-import {CreateGameRequestDto} from './dto/requests/create-game-request.dto';
-import {MakeMoveRequestDto} from './dto/requests/make-move-request.dto';
+import {IGameBoardService} from './interfaces/game-board-service.interface.js';
+import {IUuidGenerator} from '../utility/uuid-generator.interface.js';
+import {UUID} from '../utility/uuid.type.js';
+import {UTILITY_DI_TYPES} from '../utility/di.symbols.js';
+import {CreateGameRequestDto} from './dto/requests/create-game-request.dto.js';
+import {MakeMoveRequestDto} from './dto/requests/make-move-request.dto.js';
 
 
 @Controller('/game')

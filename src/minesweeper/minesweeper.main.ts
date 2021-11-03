@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ApplicationModule } from './app/application-module.class';
+import { ApplicationModule } from './app/application-module.class.js';
 
 async function bootstrap() {
    const app = await NestFactory.create(ApplicationModule);
@@ -12,15 +12,15 @@ bootstrap();
 // import express, {Express, RequestHandler} from 'express';
 // import session from 'express-session';
 //
-// import {DI_TYPES} from './utility/di.symbols';
-// import {MinesweeperApp} from './app/minesweeper-app.service';
-// import {RandomGenerator} from './utility/random-generator.class';
-// import {GameBoardFactory} from './domain/aggregates/game-board-factory.class';
-// import {IGameBoard} from './domain/aggregates/game-board.interface';
-// import {IRandomGenerator} from './utility/random-generator.interface';
-// import {IGameBoardFactory} from './domain/aggregates/game-board-factory.interface';
-// import {IUuidGenerator} from './utility/uuid-generator.interface';
-// import {UuidGenerator} from './utility/uuid-generator.service';
+// import {DI_TYPES} from './utility/di.symbols.js';
+// import {MinesweeperApp} from './app/minesweeper-app.service.js';
+// import {RandomGenerator} from './utility/random-generator.class.js';
+// import {GameBoardFactory} from './domain/aggregates/game-board-factory.class.js';
+// import {IGameBoard} from './domain/aggregates/game-board.interface.js';
+// import {IRandomGenerator} from './utility/random-generator.interface.js';
+// import {IGameBoardFactory} from './domain/aggregates/game-board-factory.interface.js';
+// import {IUuidGenerator} from './utility/uuid-generator.interface.js';
+// import {UuidGenerator} from './utility/uuid-generator.service.js';
 //
 // const appContainer = new Container();
 // appContainer.bind<Express>(DI_TYPES.Express)

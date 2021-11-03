@@ -1,4 +1,4 @@
-import {UUID} from './uuid.type';
+import {UUID} from './uuid.type.js';
 
 export interface IUuidGenerator {
    generate(): UUID;

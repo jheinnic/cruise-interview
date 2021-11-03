@@ -1,4 +1,4 @@
-import {ErrorCode} from './error-code.enum';
+import {ErrorCode} from './error-code.enum.js';
 import {IsDefined, IsNotEmpty, IsNotIn} from 'class-validator';
 
 export class ErrorEvent {

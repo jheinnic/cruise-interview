@@ -1,12 +1,14 @@
 {
+  "type": "module",
   "scripts": {
-        "build": "yarn run clean && tsc --declaration",
-        "clean": "rm -rf dist/*.js dist/*.d.ts build .nyc_output build coverage doc; mkdir build",
-        "cover": "yarn test && nyc report --reporter=lcov",
-        "doc": "node_modules/.bin/typedoc --mode modules --out doc src typings",
-        "pub": "yarn build && yarn publish --registry http://localhost:4873",
-        "test": "rm -rf build && mkdir build && tsc -p test && nyc mocha build/test/*.js"
-},
+    "build": "yarn run clean && tsc --declaration",
+    "clean": "rm -rf dist/*.js dist/*.d.ts build .nyc_output build coverage doc; mkdir build",
+    "cover": "yarn test && nyc report --reporter=lcov",
+    "doc": "node_modules/.bin/typedoc --mode modules --out doc src typings",
+    "pub": "yarn build && yarn publish --registry http://localhost:4873",
+    "test": "rm -rf build && mkdir build && tsc -p test && nyc mocha build/test/*.js",
+    "run": "node ./dist/minesweeper.main.js"
+  },
   "dependencies": {
     "@loopback/metadata": "^1.0.1",
     "@nestjs/common": "^5.4.1",
@@ -30,7 +32,7 @@
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3",
     "simplytyped": "^1.6.0",
-    "tslib": "^1.9.3",
+    "tslib": "^1",
     "uuid": "^3.3.2",
     "ws": "^6.1.2"
   },
@@ -52,6 +54,7 @@
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
     "sinon": "^7.1.1",
+    "ts-node": "^10.4.0",
     "typescript": "^3.2.1"
   }
 }

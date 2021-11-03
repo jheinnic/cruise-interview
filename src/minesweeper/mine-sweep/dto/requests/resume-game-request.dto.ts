@@ -1,5 +1,5 @@
 import {IsUUID} from 'class-validator';
-import {UUID} from '../../../utility/uuid.type';
+import {UUID} from '../../../utility/uuid.type.js';
 
 export class ResumeGameRequestDto {
    @IsUUID()

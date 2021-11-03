@@ -1,5 +1,5 @@
 import {MetadataAccessor} from '@loopback/metadata';
-import {AbstractCommand} from './absrtract-command.class';
+import {AbstractCommand} from './absrtract-command.class.js';
 
 export interface CommandHandlerMarker<T extends AbstractCommand> {
    type: symbol,

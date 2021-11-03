@@ -1,5 +1,5 @@
 import {Min} from 'class-validator';
-import {MaxByProduct} from '../../../utility/validation/max-by-product.constraint';
+import {MaxByProduct} from '../../../utility/validation/max-by-product.constraint.js';
 
 export class CreateGameRequestDto {
    @Min(3)

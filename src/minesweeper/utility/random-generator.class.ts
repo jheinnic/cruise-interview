@@ -1,4 +1,4 @@
-import {IRandomGenerator} from './random-generator.interface';
+import {IRandomGenerator} from './random-generator.interface.js';
 import {Injectable} from '@nestjs/common';
 
 @Injectable()
